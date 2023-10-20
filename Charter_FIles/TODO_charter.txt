@@ -1,0 +1,138 @@
+CHARTER
+—————————————————————————————
+REST_API_TODO_LIST_MANAGER (TODO) - Identify capabilities and areas of potential instability of the TODO list manager API. Exercise each capability with the TODO functionality with data typical to the intended use of the application. The intended use of this functionality is to enable users to create a todo list using the TODO_LIST_MANAGER API.
+
+Build
+—————————————————————————————
+Release Version - 1.5.2 - https://github.com/eviltester/thingifier
+Using runTodoListRestAPI-1.5.2.jar
+
+
+Area
+—————————————————————————————
+TODO - Main functions and capabilities
+
+
+Environment
+—————————————————————————————
+MacOS Ventura 13.0
+Screen resolution: 13.3-inch (2560 × 1600)
+
+Testing Software
+—————————————————————————————
+Insomnia 8.3.0
+
+
+START
+—————————————————————————————
+5:19 PM 12/10/2023
+
+
+Other Data
+—————————————————————————————
+Written text attachment
+Video of session
+JSON API Calls
+
+
+TESTER
+—————————————————————————————
+Mihir Binay Kumar
+Billy Exarhakos
+
+
+TASK BREAKDOWN
+—————————————————————————————
+
+#DURATION
+40 minutes
+
+TEST NOTES
+—————————————————————————————
+5:19 PM 12/10/2023 - Lauch JAR file using Terminal. Had already downloaded the JAR file from the GitHub link given above. After launching the JAR file, we visited the website “http://localhost:4567” to check if the website was working. Inside the website, we checked the todo list already inside the API by clicking the Entity Explorer link on the website. We noticed there were 2 data points already existing with ID 1 and ID 2.
+
+5:19 PM 12/10/2023 - To do all our HTTP API calls we used an API HTTP call software called Insomnia
+
+5:20 PM 12/10/2023 - We start with a POST HTTP call for “http://localhost:4567/todos” with a JSON body consisting of a boolean doneStatus, String description and String Title. In return, we got 201 HTTP status (CREATED) with an identical JSON body as our input and also an ID.
+
+5:22 PM 12/10/2023 - We then send the same POST HTTP call to the same link with the same JSON body but this time we send the doneStatus as a String instead of a Boolean. As expected we get an error message saying “Failed Verification: doneStatus should be a Boolean” with a 400 HTTP status (BAD REQUEST). 
+
+5:23 PM 12/10/2023 - We continued with the same HTTP POST call but we sent the JSON body without a title. This led to an error message saying “title: field is mandatory” with a 400 HTTP status (BAD REQUEST)
+
+5:23 PM 12/10/2023 - We also sent a JSON body without a description to the same HTTP POST call but this time we got a 201 HTTP status (CREATED) with a JSON body that had the same title and doneStatus as the input we had sent in but a new ID and an empty description.
+
+5:24 PM 12/10/2023 - We also did an HTTP POST call for the same link with a JSON body that also included a predetermined ID that we randomly gave. The API sent back a 400 HTTP status (BAD REQUEST) with an error message saying “Invalid Creation: Failed Validation: Not allowed to create with id”.
+
+5:24 PM 12/10/2023 - The next test for the current HTTP POST call was to send a JSON body with all the necessary attributes but with an empty String for the title. The API returned a 400 HTTP status (BAD REQUEST) with an error message saying “Failed Validation: title: can not be empty”.
+
+5:25 PM 12/10/2023 - And the final test on the POST HTTP call for “http://localhost:4567/todos”, we sent in a JSON body with all allowed attributes except for the doneStatus. In return, we got a 201 HTTP status (Created) with almost the same JSON body as our input but with a new ID and the doneStatus as False. This means the default doneStatus for this API call is always False.
+
+5:25 PM 12/10/2023 - The next test API call we did was a GET request for the same link “http://localhost:4567/todos”. We sent in the GET HTTP call and got back all our previous valid data points that we had sent previously in a JSON format in no particular order. The JSON body also included the previously stored data points with ID 1 and ID 2. This concludes all API calls related to the link “http://localhost:4567/todos”
+
+5:27 PM 12/10/2023 - Moving on to the next link, we started testing different types of API calls (POST, GET, PUT and DELETE) for the link “http://localhost:4567/todos/id” where “id” is the ID of the already stored TODO data point inside the API. To make our testing easier, we used the TODO data points that we had created in our earlier tests. 
+
+5:28 PM 12/10/2023 - The first API call we tested for the link “http://localhost:4567/todos/id” is a POST HTTP call with “id” as 3 (http://localhost:4567/todos/3). The ID 3 TODO data point was one of the previously created TODO data points. The previous doneStatus for this data point was False. Therefore, we sent in a JSON body with all the same data for the necessary attributes except for doneStatus we sent in True. The result of sending in this POST request was a 200 HTTP status (OK) with a JSON body the same as the input JSON body that we sent and also including the ID as 3 with the doneStatus attribute being True.
+
+5:28 PM 12/10/2023 - We continue with the same POST HTTP call for the same link and data point ID (3). However, we send in a JSON body with just the description attribute that is different than the previous description for the TODO data point ID 3. This resulted in a 200 HTTP status (OK) with a JSON body that consisted of the same title, doneStatus and ID as the previous JSON body but with a change in the description that was replaced with the description that we had sent in as an input. 
+
+5:29 PM 12/10/2023 - The next test we did for the POST HTTP call was with JSON body with a new title for the data point ID 3 and the same link as before. The API returned a JSON body with the title as the input JSON body and the same description, doneStatus and ID with also a 200 HTTP status (OK).
+
+5:30 PM 12/10/2023 - We then try to use the same POST HTTP call towards the same link format, however, we change the id of the link to 56 (“http://localhost:4567/todos/56”) which we had already known was not an existing data point inside the API. Therefore, as expected, we got an error message saying “No such todo entity instance with GUID or ID 56 found” and a 404 HTTP status (Not Found).
+
+5:30 PM 12/10/2023 - Moving on to the GET HTTP call for the same link (“http://localhost:4567/todos/3”) with the ID as 3 based on our knowledge that ID 3 data points do exist, we send in the call to the API and in return get a JSON body with all the updated information on ID 3 and a 200 HTTP status (OK).
+
+5:31 PM 12/10/2023 - We also checked an invalid GET HTTP call for the same link but with an ID that we know does not exist in the API currently (ID-78) and as expected got an error message saying “Could not find an instance with todo/78” and a 404 HTTP status code (Not Found).
+
+5:32 PM 12/10/2023 - For better understanding, we did the same invalid GET HTTP call as the previous test, but this time with a negative ID -2 (“http://localhost:4567/todos/-2”) and again got the same formated message saying “Could not find an instance with todo/-2” with a 404 HTTP status code (Not found).
+
+5:33 PM 12/10/2023 - We now move on to the PUT HTTP call where we maintain the same format of the API link (“http://localhost:4567/todos/5”) and use an existing ID 5 data point. We sent in a JSON body with just a new title. In return, we got a JSON body with the same title as we had provided as input but, the doneStatus that was True before had turned False and the description had turned into an empty string. We understand that PUT HTTP calls do provide a completely new update to a data point, however, based on the documentation of the API, it does say that the PUT HTTP call “amends a specific instance of todo using an id with body containing THE FIELDS TO AMEND” which is the same description as the POST HTTP call. Therefore, we are regarding this as a BUG. ##BUG
+
+5:34 PM 12/10/2023 - To further test this PUT HTTP call, we changed the ID 5 data point back to its original data using the POST HTTP call and the same link as before (“http://localhost:4567/todos/5”) and then tried sending a JSON body with just a description. In return, we got an error message saying “title: field is mandatory” and a 400 HTTP status code (Bad Request). This further proves our previous BUG to be existent with this PUT API call. With these tests on the PUT HTTP call for the link format http://localhost:4567/todos/:id, we can say that the BUG deletes all the previous data of the ID we had asked for and completely takes in the JSON body we sent in as the new data point for all the attributes (doneStatus, description, and title) even if they are not provided in the input JSON body, ##BUG 
+
+5:35 PM 12/10/2023 - The final HTTP call test for the TODO functionality was the DELETE HTTP call for the link format “http://localhost:4567/todos/:id”. Therefore, we continued to use ID 5 as our test data point and therefore sent in the API call (“http://localhost:4567/todos/5”). As a result, we got no JSON body however, we got a 200 HTTP status code (OK). To check if the data point with ID 5 was deleted, we used the GET HTTP call of the same link and ID and in return, we got an error message saying - “Could not find an instance with todos/5” which proves that ID 5 data point was deleted
+
+5:37 PM 12/10/2023 - And the final test for the TODO functionality was to send the DELETE HTTP call of the same format as before, but with a data point ID that we know does not exist in the API (ID - 56). The API call resulted in an error message - “Could not find an instance with todos/56” and a 404 HTTP status code (Not Found) which is what we had exactly expected.
+
+Areas not covered:
+
+  • /todos/:id/categories
+  e.g. http://localhost:4567/todos/:id/categories
+	◦	GET /todos/:id/categories
+	▪	return all the category items related to todo, with a given id, by the relationship named categories
+	◦	POST /todos/:id/categories
+	▪	create an instance of a relationship named categories between the todo instance:id and the category instance represented by the id in the body of the message
+
+	•	/todos/:id/categories/:id
+	•	 e.g. http://localhost:4567/todos/:id/categories/:id
+	◦	DELETE /todos/:id/categories/:id
+	▪	delete the instance of the relationship named categories between todo and category using the: id
+
+	•	/todos/:id/task-of
+	•	 e.g. http://localhost:4567/todos/:id/task-of
+	◦	GET /todos/:id/task-of
+	▪	return all the project items related to todo, with a given id, by the relationship named task-of
+	◦	POST /todos/:id/task-of
+	▪	create an instance of a relationship named task-of between the todo instance:id and the project instance represented by the id in the body of the message
+
+	•	/todos/:id/task-of/:id
+	•	 e.g. http://localhost:4567/todos/:id/task-of/:id
+	◦	DELETE /todos/:id/task-of/:id
+	▪	delete the instance of the relationship named task-of between todo and project using the: id
+
+
+
+5:38 PM 12/10/2023 - Writing Bug reports
+
+
+** Ending session
+
+Bugs Logged/Closed
+—————————————————————————————
+
+We now move on to the PUT HTTP call where we maintain the same format of the API link (“http://localhost:4567/todos/5”) and use an existing ID 5 data point. We sent in a JSON body with just a new title. In return, we got a JSON body with the same title as we had provided as input but, the doneStatus that was True before had turned False and the description had turned into an empty string. We understand that PUT HTTP calls do provide a completely new update to a data point, however, based on the documentation of the API, it does say that the PUT HTTP call “amends a specific instance of todo using an id with body containing THE FIELDS TO AMEND” which is the same description as the POST HTTP call. Therefore, we are regarding this as a BUG. ##BUG
+
+To further test this PUT HTTP call, we changed the ID 5 data point back to its original data using the POST HTTP call and the same link as before (“http://localhost:4567/todos/5”) and then tried sending a JSON body with just a description. In return, we got an error message saying “title: field is mandatory” and a 400 HTTP status code (Bad Request). This further proves our previous BUG to be existent with this PUT API call. With these tests on the PUT HTTP call for the link format http://localhost:4567/todos/:id, we can say that the BUG deletes all the previous data of the ID we had asked for and completely takes in the JSON body we sent in as the new data point for all the attributes (doneStatus, description, and title) even if they are not provided in the input JSON body, ##BUG 
+
+
+
+

@@ -56,7 +56,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response.json()['title'], new_todo['title'])
 
     """
-    Post request of nre todo object with non-boolean attribute for doneStatus
+    Post request of new todo object with non-boolean attribute for doneStatus
     """
 
     def test_post_new_todo_done_status_non_boolean(self):  # Invalid
