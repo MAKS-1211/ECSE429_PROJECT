@@ -38,6 +38,34 @@ class MyTestCase(unittest.TestCase):
             deleted_id = str(data_points['id'])
             requests.delete("http://localhost:4567/todos/" + deleted_id)
 
+    def test_json_malformed(self):
+        malformed_json = {
+            "attribute1": "does not exist",
+            "attribute2": False,
+            "attribute3": -1
+        }
+
+        response = requests.post("http://localhost:4567/todos", data=json.dumps(malformed_json))
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["errorMessages"][0], "Could not find field: attribute1 on Entity todo")
+
+    def test_xml_malformed(self):
+        malformed_xml = """
+      <root>
+        <attribute1>does not exist</attribute1>
+        <attribute2>false</attribute2>
+        <attribute3>-1</attribute3>
+      </root>
+      """
+
+        headers = {
+            'Content-Type': 'application/xml'
+        }
+
+        response = requests.post("http://localhost:4567/todos", data=malformed_xml, headers=headers)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["errorMessages"][0], "java.lang.IllegalStateException: Expected BEGIN_OBJECT but was STRING at line 2 column 7 path $")
+
     """
     Post request of new todo object with all valid attributes
     """
@@ -457,11 +485,11 @@ class MyTestCase(unittest.TestCase):
 
         response1 = requests.post("http://localhost:4567/todos", data=json.dumps(new_todo1))
 
-        response2 = requests.delete("http://localhost:4567/todos/" + str(int(response1.json()['id'])+1))
+        response2 = requests.delete("http://localhost:4567/todos/" + str(int(response1.json()['id']) + 1))
 
         self.assertEqual(response2.status_code, 404)
         self.assertEqual(response2.json()["errorMessages"][0], "Could not find any instances with todos/"
-                         + str(int(response1.json()['id'])+1))
+                         + str(int(response1.json()['id']) + 1))
 
     def test_delete_negative_id_single_todo(self):
         new_todo1 = {
