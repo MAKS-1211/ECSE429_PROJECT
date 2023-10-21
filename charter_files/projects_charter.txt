@@ -1,0 +1,189 @@
+CHARTER
+—————————————————————————————
+REST_API_TODO_LIST_MANAGER (projects)
+
+Identify capabilities and areas of potential instability of the projects 
+section of the “rest api todo list manager”.
+
+Identify documented and undocumented “rest api todo list manager”
+capabilities in the projects section.
+
+Exercise each capability identified with data typical to the intended
+use of the application.
+
+Build
+—————————————————————————————
+Release Version - 1.5.2 - https://github.com/eviltester/thingifier
+Using runTodoListRestAPI-1.5.2.jar
+
+
+Area
+—————————————————————————————
+projects - Main functions and capabilities
+
+
+Environment
+—————————————————————————————
+MacOS Ventura 13.0
+Screen resolution: 13.3-inch (2560 × 1600)
+
+Testing Software
+—————————————————————————————
+Insomnia 8.3.0
+
+
+START
+—————————————————————————————
+5:40 PM 12/10/2023
+
+
+Other Data
+—————————————————————————————
+Written text attachment
+Video of session
+JSON API Calls
+
+
+TESTER
+—————————————————————————————
+Mihir Binay Kumar
+mihir.kumar@mail.mcgill.ca
+
+
+Billy Exarhakos
+vassilios.exarhakos@mail.mcgill.ca
+261051989
+
+
+TASK BREAKDOWN
+—————————————————————————————
+
+#DURATION
+40 minutes
+
+TEST NOTES
+—————————————————————————————
+5:40 PM 12/10/2023 - Launched runTodoListRestAPI-1.5.2.jar using Terminal and opened up the API documentation at “http://localhost:4567”. We are using an API HTTP call software called Insomnia.
+
+5:41 PM 12/10/2023 - To start off, we sent a POST call to “http://localhost:4567/projects” with a JSON body consisting of booleans: active and completed, as well as Strings: description and Title. In return, we got 201 HTTP status (CREATED) with an identical JSON body as our input and also an ID.
+
+5:42 PM 12/10/2023 - We then sent a POST HTTP call to the same link with the a JSON body which only designates a String: description. Once again we got a 201 HTTP status (CREATED), as the API created a project with the same description we gave as input, as well as default values ("" for Strings, False for booleans) for the other fields. 
+
+5:42 PM 12/10/2023 - We then sent a POST call with a JSON body which only designated a String: title. We got a 201 HTTP status (CREATED), as the API created a project with the same title we gave as input, as well as default values for the other fields.
+
+5:43 PM 12/10/2023 - Sent a POST call with only a boolean: active. Once again we got a 201 HTTP status (CREATED) and the API created a project with the same boolean we gave for active, as well as default values for the other fields.
+
+5:43 PM 12/10/2023 - Sent a POST call with only a boolean: completed. We got a 201 HTTP status (CREATED) as the API created a project with the same boolean we gave for completed, as well as default values for the other fields.
+
+5:43 PM 12/10/2023 - Sent a POST call with the completed field set as the integer 2 instead of a boolean. We got a 400 HTTP status (Bad Request) and an error stating "Failed Validation: completed should be BOOLEAN"
+
+5:44 PM 12/10/2023 - Sent a POST call with the active field set as the integer 2 instead of a boolean. We got a 400 HTTP status (Bad Request) and an error stating "Failed Validation: active should be BOOLEAN"
+
+5:45 PM 12/10/2023 - Sent a POST call with the active field set as null instead of a boolean. We got a 400 HTTP status (Bad Request) and an error stating "Failed Validation: active should be BOOLEAN"
+
+5:45 PM 12/10/2023 - Sent a POST call which specified an id of 20 in the JSON body. We got a 400 HTTP status (Bad Request) and an error stating "Invalid Creation: Failed Validation: Not allowed to create with id"
+
+5:46 PM 12/10/2023 - Sent a GET call to “http://localhost:4567/projects” and received a 201 HTTP Status along with all previously created projects.
+
+5:46 PM 12/10/2023 - Sent a GET call to “http://localhost:4567/project” and received a 404 HTTP Status (Not Found).
+
+5:47 PM 12/10/2023 - Sent a GET call to “http://localhost:4567/projects/3” and received a 200 HTTP Status (OK) along with the project we created previously that had an id of 3.
+
+5:47 PM 12/10/2023 - Sent a GET call to “http://localhost:4567/projects/20” and received a 404 HTTP Status along with an error message "Could not find an instance with projects/20".
+
+5:47 PM 12/10/2023 - Sent a GET call to “http://localhost:4567/projects/-20” and received a 404 HTTP Status along with an error message "Could not find an instance with projects/-20".
+
+5:48 PM 12/10/2023 - Sent a POST call to “http://localhost:4567/projects/3” which already had a project in it. The JSON body of the call had the same attributes of the original project but with active changed from false to true. We got a 200 HTTP status and the project in "http://localhost:4567/projects/3" now had its active status updated from false to true.
+
+5:49 PM 12/10/2023 - Sent another POST call to “http://localhost:4567/projects/3” with a JSON body which only specified a description. We got a 200 HTTP status and the project in "http://localhost:4567/projects/3" now had its description updated to the new one we gave with the rest of the fields unchanged.
+
+5:49 PM 12/10/2023 - Sent another POST call to “http://localhost:4567/projects/3” with a JSON body which only specified a title. We got a 200 HTTP status and the project in "http://localhost:4567/projects/3" now had its title updated to the new one we gave with the rest of the fields unchanged.
+
+5:49 PM 12/10/2023 - Sent another POST call to “http://localhost:4567/projects/3” with a JSON body which only specified a boolean active. We got a 200 HTTP status and the project in "http://localhost:4567/projects/3" now had its active field updated to the new one we gave with the rest of the fields unchanged.
+
+5:49 PM 12/10/2023 - Sent another POST call to “http://localhost:4567/projects/3” with a JSON body which only specified a boolean completed. We got a 200 HTTP status and the project in "http://localhost:4567/projects/3" now had its completed field updated to the new one we gave with the rest of the fields unchanged.
+
+5:49 PM 12/10/2023 - Sent a POST call to “http://localhost:4567/projects/3” and put the string "hello" for completed. We got a 400 HTTP status and an error message "Failed Validation: completed should be BOOLEAN".
+
+5:49 PM 12/10/2023 - Sent a POST call to “http://localhost:4567/projects/3” and put the string "hello" for active. We got a 400 HTTP status and an error message "Failed Validation: active should be BOOLEAN".
+
+5:51 PM 12/10/2023 - Sent a POST call to “http://localhost:4567/projects/3” with title: null. We got a 200 HTTP status and the title of the project was unchanged.
+
+5:52 PM 12/10/2023 - Sent a POST call to “http://localhost:4567/projects/3” with id: 20. We got a 400 HTTP status and an error message "Can not amend id on Entity project from 3 to 20.0".
+
+5:53 PM 12/10/2023 - Sent a POST call to “http://localhost:4567/projects/20” with active: true. We got a 404 HTTP status and an error message "No such project entity instance with GUID or ID 20 found".
+
+5:54 PM 12/10/2023 - Sent a PUT call to “http://localhost:4567/projects/2” which already had a project in it. The JSON body of the call had the same attributes of the original project except the boolean fields we're now strings. We got a 400 HTTP status and an error message "Failed Validation: active should be BOOLEAN, completed should be BOOLEAN".
+
+5:54 PM 12/10/2023 - Sent a PUT call to “http://localhost:4567/projects/2” which already had a project in it. The JSON body of the call had the same attributes of the original project except for the  title which we updated. We got a 200 HTTP status and the project in "http://localhost:4567/projects/2" now had its title updated.
+
+5:55 PM 12/10/2023 - Sent a PUT call to “http://localhost:4567/projects/2” with a JSON body which only specified a title. We got a 200 HTTP status and the project in "http://localhost:4567/projects/2" now had the title updated to the new one we gave but the rest of the fields reset to the default values ("" for Strings, false for booleans). ##BUG
+
+5:55 PM 12/10/2023 - Sent a PUT call to “http://localhost:4567/projects/2” and specified only a description in the body. We got a 200 HTTP status and the project in "http://localhost:4567/projects/2" now had the description updated to the new one but the rest of the fields reset to the default values. ##BUG
+
+5:57 PM 12/10/2023 - Sent a PUT call to “http://localhost:4567/projects/2” and specified only a a boolean active in the body. We got a 200 HTTP status and the project in "http://localhost:4567/projects/2" now had the active field updated but the rest of the fields reset to the default values. ##BUG
+
+5:58 PM 12/10/2023 - Sent a PUT call to “http://localhost:4567/projects/2” and specified only a boolean completed in the body. We got a 200 HTTP status and the project in "http://localhost:4567/projects/2" now had the completed field updated but the rest of the fields reset to the default values. ##BUG
+
+5:58 PM 12/10/2023 - Sent a PUT call to “http://localhost:4567/projects/21”. We got a 404 HTTP status and an error message "Invalid GUID for 21 entity project".
+
+5:58 PM 12/10/2023 - Sent a PUT call to “http://localhost:4567/projects/two”. We got a 404 HTTP status and an error message "Invalid GUID for two entity project".
+
+5:58 PM 12/10/2023 - Sent a PUT call to “http://localhost:4567/projects/two”. We got a 404 HTTP status and an error message "Invalid GUID for two entity project".
+
+5:58 PM 12/10/2023 - Sent a DELETE call to “http://localhost:4567/projects/3”, which had a project in it and got a 200 HTTP status. After the call, a GET call to “http://localhost:4567/projects/3” raised an error, meaning deletion was successful.
+
+5:59 PM 12/10/2023 - Sent a DELETE call to “http://localhost:4567/projects/90”, which did not have a project in it. We got a 404 HTTP status and an error message "Could not find any instances with projects/90".
+
+5:59 PM 12/10/2023 - Sent a DELETE call to “http://localhost:4567/projects/eight”. We got a 404 HTTP status and an error message "Could not find any instances with projects/eight".
+
+5:59 PM 12/10/2023 - Sent a DELETE call to “http://localhost:4567/projects/-8”. We got a 404 HTTP status and an error message "Could not find any instances with projects/-8".
+
+
+Areas not covered:
+
+  • /projects/:id/tasks
+  e.g. http://localhost:4567/projects/:id/tasks
+	◦	GET /projects/:id/tasks
+	▪	return all the todo items related to project, with given id, by the relationship named tasks
+	◦	POST /projects/:id/tasks
+	▪	create an instance of a relationship named tasks between project instance :id and the todo instance represented by the id in the body of the message
+
+  • /projects/:id/tasks/:id
+  e.g. http://localhost:4567/projects/:id/tasks/:id
+	◦	DELETE /projects/:id/tasks/:id
+	▪	delete the instance of the relationship named tasks between project and todo using the :id
+
+  • /projects/:id/categories
+  e.g. http://localhost:4567/projects/:id/categories
+	◦	GET /projects/:id/categories
+	▪	return all the category items related to project, with given id, by the relationship named categories
+	◦	POST /projects/:id/categories
+	▪	create an instance of a relationship named categories between project instance :id and the category instance represented by the id in the body of the message
+
+  • /projects/:id/categories/:id
+  e.g. http://localhost:4567/projects/:id/categories/:id
+	◦	DELETE /projects/:id/categories/:id
+	▪	delete the instance of the relationship named categories between project and category using the :id
+
+
+
+6:00 PM - 6:25 PM 12/10/2023 - Writing report
+
+
+** Ending session
+
+Bugs Logged/Closed
+—————————————————————————————
+
+Sent a PUT call to “http://localhost:4567/projects/2” with a JSON body which only specified a title. We got a 200 HTTP status and the project in "http://localhost:4567/projects/2" now had the title updated to the new one we gave but the rest of the fields reset to the default values ("" for Strings, false for booleans). ##BUG
+
+Sent a PUT call to “http://localhost:4567/projects/2” and specified only a description in the body. We got a 200 HTTP status and the project in "http://localhost:4567/projects/2" now had the description updated to the new one but the rest of the fields reset to the default values. ##BUG
+
+Sent a PUT call to “http://localhost:4567/projects/2” and specified only a a boolean active in the body. We got a 200 HTTP status and the project in "http://localhost:4567/projects/2" now had the active field updated but the rest of the fields reset to the default values. ##BUG
+
+Sent a PUT call to “http://localhost:4567/projects/2” and specified only a boolean completed in the body. We got a 200 HTTP status and the project in "http://localhost:4567/projects/2" now had the completed field updated but the rest of the fields reset to the default values. ##BUG
+
+
+
+
