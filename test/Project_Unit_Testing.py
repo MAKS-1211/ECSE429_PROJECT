@@ -5,6 +5,12 @@ import os
 import subprocess
 import time
 
+# Defining HTTP status codes
+NOT_FOUND = 404
+BAD_REQUEST = 400
+OK = 200
+CREATED = 201
+
 class MyTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -32,7 +38,7 @@ class MyTestCase(unittest.TestCase):
         }
 
         response = requests.post("http://localhost:4567/projects", data=json.dumps(malformed_json))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, BAD_REQUEST)
         self.assertEqual(response.json()["errorMessages"][0], "Could not find field: attribute1 on Entity project")
 
     def test_xml_malformed(self):
@@ -49,7 +55,7 @@ class MyTestCase(unittest.TestCase):
         }
 
         response = requests.post("http://localhost:4567/projects", data=malformed_xml, headers=headers)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, BAD_REQUEST)
         self.assertEqual(response.json()["errorMessages"][0], "java.lang.IllegalStateException: Expected BEGIN_OBJECT but was STRING at line 2 column 7 path $")
 
 
@@ -122,7 +128,7 @@ class MyTestCase(unittest.TestCase):
         }
 
         response = requests.post("http://localhost:4567/projects", data=json.dumps(new_project))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, BAD_REQUEST)
         self.assertEqual(response.json()["errorMessages"][0], "Failed Validation: completed should be BOOLEAN")
 
     def test_post_project_active_int(self):
@@ -131,7 +137,7 @@ class MyTestCase(unittest.TestCase):
         }
 
         response = requests.post("http://localhost:4567/projects", data=json.dumps(new_project))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, BAD_REQUEST)
         self.assertEqual(response.json()["errorMessages"][0], "Failed Validation: active should be BOOLEAN")
 
     def test_post_project_active_null(self):
@@ -140,7 +146,7 @@ class MyTestCase(unittest.TestCase):
         }
 
         response = requests.post("http://localhost:4567/projects", data=json.dumps(new_project))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, BAD_REQUEST)
         self.assertEqual(response.json()["errorMessages"][0], "Failed Validation: active should be BOOLEAN")
 
     def test_post_project_specified_id(self):
@@ -149,7 +155,7 @@ class MyTestCase(unittest.TestCase):
         }
 
         response = requests.post("http://localhost:4567/projects", data=json.dumps(new_project))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, BAD_REQUEST)
         self.assertEqual(response.json()["errorMessages"][0], "Invalid Creation: Failed Validation: Not allowed to create with id")
 
     def test_get_all_projects(self):
@@ -192,7 +198,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_get_all_projects_invalid_path(self):
         response1 = requests.get("http://localhost:4567/project")
-        self.assertEqual(response1.status_code, 404)
+        self.assertEqual(response1.status_code, NOT_FOUND)
 
     def test_get_project_by_id(self):
         new_project = {
@@ -206,7 +212,7 @@ class MyTestCase(unittest.TestCase):
 
         response_output = requests.get("http://localhost:4567/projects/" + response.json()["id"])
 
-        self.assertEqual(response_output.status_code, 200)
+        self.assertEqual(response_output.status_code, OK)
         self.assertEqual(str(response_output.json()["projects"][0]['completed']).upper(), str(new_project['completed']).upper())
         self.assertEqual(str(response_output.json()["projects"][0]['active']).upper(), str(new_project['active']).upper())
         self.assertEqual(response_output.json()["projects"][0]['description'], new_project['description'])
@@ -214,12 +220,12 @@ class MyTestCase(unittest.TestCase):
 
     def test_get_project_by_nonexistant_id(self):
         response = requests.get("http://localhost:4567/projects/20")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, NOT_FOUND)
         self.assertEqual(response.json()["errorMessages"][0], "Could not find an instance with projects/20")
 
     def test_get_project_by_negative_id(self):
         response = requests.get("http://localhost:4567/projects/-20")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, NOT_FOUND)
         self.assertEqual(response.json()["errorMessages"][0], "Could not find an instance with projects/-20")
 
     def test_post_by_id_full_body(self):
@@ -239,7 +245,7 @@ class MyTestCase(unittest.TestCase):
         }
         response2 = requests.post("http://localhost:4567/projects/" + str(response1.json()["id"]), data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project2['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project2['active']).upper())
         self.assertEqual(response2.json()['description'], project2['description'])
@@ -260,7 +266,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.post("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project1['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project1['active']).upper())
         self.assertEqual(response2.json()['description'], project2['description'])
@@ -281,7 +287,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.post("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project1['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project1['active']).upper())
         self.assertEqual(response2.json()['description'], project1['description'])
@@ -302,7 +308,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.post("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project1['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project2['active']).upper())
         self.assertEqual(response2.json()['description'], project1['description'])
@@ -323,7 +329,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.post("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project2['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project1['active']).upper())
         self.assertEqual(response2.json()['description'], project1['description'])
@@ -344,7 +350,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.post("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 400)
+        self.assertEqual(response2.status_code, BAD_REQUEST)
         self.assertEqual(response2.json()["errorMessages"][0], "Failed Validation: active should be BOOLEAN")
 
     def test_post_by_id_string_completed(self):
@@ -362,7 +368,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.post("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 400)
+        self.assertEqual(response2.status_code, BAD_REQUEST)
         self.assertEqual(response2.json()["errorMessages"][0], "Failed Validation: completed should be BOOLEAN")
 
     def test_post_by_id_null_title(self):
@@ -380,7 +386,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.post("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project1['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project1['active']).upper())
         self.assertEqual(response2.json()['description'], project1['description'])
@@ -401,7 +407,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.post("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 400)
+        self.assertEqual(response2.status_code, BAD_REQUEST)
         self.assertEqual(response2.json()["errorMessages"][0], "Can not amend id on Entity project from " + str(response1.json()["id"]) + " to 20.0")
 
     def test_post_by_id_invalid_id(self):
@@ -413,7 +419,7 @@ class MyTestCase(unittest.TestCase):
         }
         response = requests.post("http://localhost:4567/projects/20", data=json.dumps(project))
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, NOT_FOUND)
         self.assertEqual(response.json()["errorMessages"][0], "No such project entity instance with GUID or ID 20 found")
 
     def test_put_by_id_string_active_and_completed(self):
@@ -433,7 +439,7 @@ class MyTestCase(unittest.TestCase):
         }
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]), data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 400)
+        self.assertEqual(response2.status_code, BAD_REQUEST)
         self.assertEqual(response2.json()["errorMessages"][0], "Failed Validation: active should be BOOLEAN, completed should be BOOLEAN")
 
     def test_put_by_id_full_body(self):
@@ -453,7 +459,7 @@ class MyTestCase(unittest.TestCase):
         }
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]), data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project2['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project2['active']).upper())
         self.assertEqual(response2.json()['description'], project2['description'])
@@ -474,7 +480,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project1['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project1['active']).upper())
         self.assertEqual(response2.json()['description'], project2['description'])
@@ -495,7 +501,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), "FALSE")
         self.assertEqual(str(response2.json()['active']).upper(), "FALSE")
         self.assertEqual(response2.json()['description'], project2['description'])
@@ -516,7 +522,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project1['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project1['active']).upper())
         self.assertEqual(response2.json()['description'], project1['description'])
@@ -537,7 +543,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), "FALSE")
         self.assertEqual(str(response2.json()['active']).upper(), "FALSE")
         self.assertEqual(response2.json()['description'], "")
@@ -558,7 +564,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project1['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project2['active']).upper())
         self.assertEqual(response2.json()['description'], project1['description'])
@@ -579,7 +585,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), "FALSE")
         self.assertEqual(str(response2.json()['active']).upper(), str(project2['active']).upper())
         self.assertEqual(response2.json()['description'], "")
@@ -600,7 +606,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project2['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), str(project1['active']).upper())
         self.assertEqual(response2.json()['description'], project1['description'])
@@ -621,7 +627,7 @@ class MyTestCase(unittest.TestCase):
         response2 = requests.put("http://localhost:4567/projects/" + str(response1.json()["id"]),
                                   data=json.dumps(project2))
 
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
         self.assertEqual(str(response2.json()['completed']).upper(), str(project2['completed']).upper())
         self.assertEqual(str(response2.json()['active']).upper(), "FALSE")
         self.assertEqual(response2.json()['description'], "")
@@ -637,26 +643,25 @@ class MyTestCase(unittest.TestCase):
         response1 = requests.post("http://localhost:4567/projects", data=json.dumps(project1))
 
         response2 = requests.delete("http://localhost:4567/projects/" + str(response1.json()["id"]))
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, OK)
 
         response3 = requests.get("http://localhost:4567/projects/" + str(response1.json()["id"]))
-        self.assertEqual(response3.status_code, 404)
+        self.assertEqual(response3.status_code, NOT_FOUND)
 
     def test_delete_invalid_id(self):
         response = requests.delete("http://localhost:4567/projects/90")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, NOT_FOUND)
         self.assertEqual(response.json()["errorMessages"][0], "Could not find any instances with projects/90")
 
     def test_delete_string_id(self):
         response = requests.delete("http://localhost:4567/projects/eight")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, NOT_FOUND)
         self.assertEqual(response.json()["errorMessages"][0], "Could not find any instances with projects/eight")
 
     def test_delete_negative_id(self):
         response = requests.delete("http://localhost:4567/projects/-8")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, NOT_FOUND)
         self.assertEqual(response.json()["errorMessages"][0], "Could not find any instances with projects/-8")
 
 if __name__ == '__main__':
     unittest.main()
-
