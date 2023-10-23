@@ -2,20 +2,20 @@ import unittest
 import random
 
 
-def shuffle_tests(suite):
+def randomize_test(suite):
     test_list = list(suite)
     random.shuffle(test_list)
     return unittest.TestSuite(test_list)
 
 
-def run_tests():
+def testing():
     loader = unittest.TestLoader()
     suite = loader.discover(start_dir='.', pattern='test_*.py')
 
-    shuffled_suite = shuffle_tests(suite)
+    random_suite = randomize_test(suite)
 
     runner = unittest.TextTestRunner(verbosity=2)
-    result = runner.run(shuffled_suite)
+    result = runner.run(random_suite)
 
     if result.wasSuccessful():
         return 0
@@ -24,5 +24,5 @@ def run_tests():
 
 
 if __name__ == '__main__':
-    exit_code = run_tests()
+    exit_code = testing()
     exit(exit_code)

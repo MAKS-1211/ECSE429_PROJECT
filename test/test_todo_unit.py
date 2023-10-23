@@ -7,18 +7,9 @@ import time
 
 
 class MyTestCase(unittest.TestCase):
-    """def setUp2(self):
-        self.current_directory = os.getcwd()
-        self.api_path = self.current_directory + "/runTodoManagerRestAPI-1.5.22.jar"
-        print(self.api_path)
-        self.jar_process = subprocess.Popen(['java', '-jar', self.api_path])
-        time.sleep(5)
-        response1 = requests.delete("http://localhost:4567/todos/1")
-        response2 = requests.delete("http://localhost:4567/todos/2")"""
-
-    '''def tearDown(self):
-        self.jar_process.terminate()
-        self.jar_process.wait()'''
+    """
+    Run before start of Unit Testing for this class
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -27,16 +18,28 @@ class MyTestCase(unittest.TestCase):
         cls.jar_process = subprocess.Popen(['java', '-jar', cls.api_path])
         time.sleep(5)
 
+    """
+    Run function at the end of Unit testing for this class
+    """
+
     @classmethod
     def tearDownClass(cls):
         cls.jar_process.terminate()
         cls.jar_process.wait()
+
+    """
+    Run before every test function in this class
+    """
 
     def setUp(self):
         response = requests.get("http://localhost:4567/todos")
         for data_points in response.json()['todos']:
             deleted_id = str(data_points['id'])
             requests.delete("http://localhost:4567/todos/" + deleted_id)
+
+    """
+    Check for JSON Malformation errors
+    """
 
     def test_json_malformed(self):
         malformed_json = {
@@ -48,6 +51,10 @@ class MyTestCase(unittest.TestCase):
         response = requests.post("http://localhost:4567/todos", data=json.dumps(malformed_json))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["errorMessages"][0], "Could not find field: attribute1 on Entity todo")
+
+    """
+    Check for XML Malformation errors
+    """
 
     def test_xml_malformed(self):
         malformed_xml = """
@@ -64,7 +71,8 @@ class MyTestCase(unittest.TestCase):
 
         response = requests.post("http://localhost:4567/todos", data=malformed_xml, headers=headers)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()["errorMessages"][0], "java.lang.IllegalStateException: Expected BEGIN_OBJECT but was STRING at line 2 column 7 path $")
+        self.assertEqual(response.json()["errorMessages"][0],
+                         "java.lang.IllegalStateException: Expected BEGIN_OBJECT but was STRING at line 2 column 7 path $")
 
     """
     Post request of new todo object with all valid attributes
@@ -98,6 +106,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["errorMessages"][0], "Failed Validation: doneStatus should be BOOLEAN")
 
+    """
+    Test for error checking on not posting title for new todo item 
+    """
+
     def test_post_new_todo_no_title(self):  # Invalid
         new_todo = {
             "doneStatus": False,
@@ -107,6 +119,10 @@ class MyTestCase(unittest.TestCase):
         response = requests.post("http://localhost:4567/todos", data=json.dumps(new_todo))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["errorMessages"][0], "title : field is mandatory")
+
+    """
+    Test for checking when no description is posted for new todo item
+    """
 
     def test_post_new_todo_no_description(self):  # Valid
         new_todo = {
@@ -119,6 +135,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(str(response.json()['doneStatus']).upper(), str(new_todo['doneStatus']).upper())
         self.assertEqual(response.json()['description'], "")
         self.assertEqual(response.json()['title'], new_todo['title'])
+
+    """
+    Test for error check if new todo item is posted with a user generated todo ID
+    """
 
     def test_post_new_todo_with_new_id(self):  # Invalid
         new_todo = {
@@ -133,6 +153,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response.json()["errorMessages"][0], "Invalid Creation: Failed Validation: Not allowed to "
                                                               "create with id")
 
+    """
+    Test for checking when no doneStatus is posted for new todo item
+    """
+
     def test_post_new_todo_without_doneStatus(self):  # Valid
         new_todo = {
             "description": "Python coding",
@@ -145,6 +169,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response.json()['description'], new_todo['description'])
         self.assertEqual(response.json()['title'], new_todo['title'])
 
+    """
+    Test for error check when empty string title is posted for new todo item
+    """
+
     def test_post_new_todo_empty_title(self):  # InValid
         new_todo = {
             "description": "Python coding",
@@ -155,6 +183,10 @@ class MyTestCase(unittest.TestCase):
         response = requests.post("http://localhost:4567/todos", data=json.dumps(new_todo))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["errorMessages"][0], "Failed Validation: title : can not be empty")
+
+    """
+    Test for getting 1 todos from getting all todos
+    """
 
     def test_get_new_todo(self):
         new_todo = {
@@ -169,6 +201,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()['todos'][0]['description'], response.json()['description'])
         self.assertEqual(response2.json()['todos'][0]['title'], response.json()['title'])
         self.assertEqual(response2.status_code, requests.codes.ok)
+
+    """
+       Test for getting multiple todos from getting all todos
+    """
 
     def test_get_all_todos(self):
         new_todo1 = {
@@ -227,6 +263,10 @@ class MyTestCase(unittest.TestCase):
             else:
                 self.fail("ID not matching!")
 
+    """
+    Test for updating doneStatus of a pre-existing todo item
+    """
+
     def test_post_for_amend_done_status_single_todo(self):
 
         new_todo1 = {
@@ -249,6 +289,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()['description'], new_todo1['description'])
         self.assertEqual(response2.json()['title'], new_todo1['title'])
         self.assertEqual(response2.status_code, 200)
+
+    """
+        Test for updating description of a pre-existing todo item
+        """
 
     def test_post_for_amend_description_single_todo(self):
 
@@ -273,6 +317,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()['title'], new_todo1['title'])
         self.assertEqual(response2.status_code, 200)
 
+    """
+        Test for updating title of a pre-existing todo item
+        """
+
     def test_post_for_amend_title_single_todo(self):
 
         new_todo1 = {
@@ -296,6 +344,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()['description'], new_todo1['description'])
         self.assertEqual(response2.status_code, 200)
 
+    """
+    Test for error checking on updating title of a non existing todo item
+    """
+
     def test_post_for_amend_non_existent_single_todo(self):  # Invalid
 
         new_todo1 = {
@@ -317,6 +369,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()["errorMessages"][0], "No such todo entity instance with GUID or ID "
                          + str(int(response1.json()["id"]) + 1) + " found")
 
+    """
+    Test for get a single todo item from ID
+    """
+
     def test_get_single_todo(self):
 
         new_todo1 = {
@@ -335,6 +391,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()['todos'][0]['description'], new_todo1['description'])
         self.assertEqual(response2.status_code, 200)
 
+    """
+    Test for error check on getting todo item of a non existent ID
+    """
+
     def test_get_positive_non_existent_single_todo(self):
 
         new_todo1 = {
@@ -351,6 +411,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()["errorMessages"][0], "Could not find an instance with todos/"
                          + str(int(response1.json()["id"]) + 1))
 
+    """
+        Test for error check on getting todo item of a non existent negative ID
+    """
+
     def test_get_negative_non_existent_single_todo(self):
 
         new_todo1 = {
@@ -366,6 +430,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.status_code, 404)
         self.assertEqual(response2.json()["errorMessages"][0], "Could not find an instance with todos/"
                          + str(-100))
+
+    """
+        Test for updating all items of a todo list from a single query
+    """
 
     def test_put_for_amend_all_single_todo(self):
         new_todo1 = {
@@ -391,6 +459,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()['title'], edited_new_todo1['title'])
         self.assertEqual(response2.status_code, 200)
 
+    """
+    Test for updating doneStatus of a pre existent todo item from ID
+    """
+
     def test_put_for_amend_done_status_single_todo(self):  # BUG!!
         new_todo1 = {
             "doneStatus": True,
@@ -412,6 +484,34 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(str(response2.json()['doneStatus']).upper(), str(edited_new_todo1['doneStatus']).upper())
         self.assertEqual(response2.json()['description'], new_todo1['description'])
         self.assertEqual(response2.json()['title'], new_todo1['title'])
+
+    """
+        Test for updating doneStatus of a pre existent todo item from ID
+    """
+
+    def test_put_for_amend_done_status_single_todo_completely(self):  # BUG!!
+        new_todo1 = {
+            "doneStatus": True,
+            "description": "Writing code 1",
+            "title": "Unit Testing 1"
+        }
+
+        response1 = requests.post("http://localhost:4567/todos", data=json.dumps(new_todo1))
+
+        edited_new_todo1 = {
+            "doneStatus": False
+        }
+
+        response2 = requests.put("http://localhost:4567/todos/" + str(response1.json()["id"]),
+                                 data=json.dumps(edited_new_todo1))
+
+        self.assertEqual(response2.status_code, 400)
+        self.assertEqual(response2.json()["errorMessages"][0], "title : field is mandatory")
+
+
+    """
+    Test for updating description of a pre existent todo item from ID
+    """
 
     def test_put_for_amend_description_single_todo(self):  # BUG!!
         new_todo1 = {
@@ -435,6 +535,31 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()['description'], edited_new_todo1['description'])
         self.assertEqual(response2.json()['title'], new_todo1['title'])
 
+    """
+        Test for updating description of a pre existent todo item from ID
+    """
+    def test_put_for_amend_description_single_todo_completely(self):  # BUG!!
+        new_todo1 = {
+            "doneStatus": True,
+            "description": "Writing code 1",
+            "title": "Unit Testing 1"
+        }
+
+        response1 = requests.post("http://localhost:4567/todos", data=json.dumps(new_todo1))
+
+        edited_new_todo1 = {
+            "description": "Writing code for ECSE"
+        }
+
+        response2 = requests.put("http://localhost:4567/todos/" + str(response1.json()["id"]),
+                                 data=json.dumps(edited_new_todo1))
+
+        self.assertEqual(response2.status_code, 400)
+        self.assertEqual(response2.json()["errorMessages"][0], "title : field is mandatory")
+
+    """
+        Test for updating title of a pre existent todo item from ID
+        """
     def test_put_for_amend_title_single_todo(self):  # BUG!!
         new_todo1 = {
             "doneStatus": True,
@@ -457,6 +582,35 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()['description'], new_todo1['description'])
         self.assertEqual(response2.json()['title'], edited_new_todo1['title'])
 
+    """
+        Test for updating title of a pre existent todo item from ID
+    """
+    def test_put_for_amend_title_single_todo_completely(self):  # BUG!!
+        new_todo1 = {
+            "doneStatus": True,
+            "description": "Writing code 1",
+            "title": "Unit Testing 1"
+        }
+
+        response1 = requests.post("http://localhost:4567/todos", data=json.dumps(new_todo1))
+
+        edited_new_todo1 = {
+            "title": "Unit Testing for ECSE"
+        }
+
+        response2 = requests.put("http://localhost:4567/todos/" + str(response1.json()["id"]),
+                                 data=json.dumps(edited_new_todo1))
+
+        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.json()['id'], response1.json()['id'])
+        self.assertEqual(str(response2.json()['doneStatus']).upper(), "FALSE")
+        self.assertEqual(response2.json()['description'], "")
+        self.assertEqual(response2.json()['title'], edited_new_todo1['title'])
+
+
+    """
+    Test for deletion of a single todo item through ID
+    """
     def test_delete_single_todo(self):
         new_todo1 = {
             "doneStatus": True,
@@ -476,6 +630,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response3.json()["errorMessages"][0], "Could not find an instance with todos/"
                          + str(response1.json()['id']))
 
+    """
+        Test for error check on deletion of a non existent single todo item through ID
+    """
     def test_delete_non_existent_single_todo(self):
         new_todo1 = {
             "doneStatus": True,
@@ -491,6 +648,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response2.json()["errorMessages"][0], "Could not find any instances with todos/"
                          + str(int(response1.json()['id']) + 1))
 
+    """
+            Test for error check on deletion of a negative single todo item through ID
+    """
     def test_delete_negative_id_single_todo(self):
         new_todo1 = {
             "doneStatus": True,
