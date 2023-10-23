@@ -1,0 +1,26 @@
+1.
+o Executive summary of bug in 80 characters or less
+PUT /projects/:id requests reset all fields not specified in the body to their default values
+
+o Description of bug
+When the body of the PUT /projects/:id request has an unspecified field, instead of leaving that field unchanged in the project at /projects/:id, the API resets it to its' default value ("" for Strings, False for booleans)
+
+o Potential impact of bug on operation of system
+This bug leads to the loss of whatever data was in the unspecified field(s) before the PUT call and thus leads to the data loss.
+
+o Steps to reproduce the bug
+To reproduce the bug send a PUT request to an already existing project with at least one field not specified in the body. It will be observed that the field(s) which was not specified will now have reverted to its' default value in the project instead of remaining unchanged.
+
+2.
+o Executive summary of bug in 80 characters or less
+PUT /todos/:id requests reset all fields not specified in the body to their default values
+
+o Description of bug
+When the body of the PUT /todos/:id request has a todo with an unspecified field, instead of leaving that field unchanged in the database, the API resets it to its' default value ("" for Strings, False for booleans)
+
+o Potential impact of bug on operation of system
+This bug leads to the loss of whatever data was in the unspecified field(s) before the PUT call and thus leads to the data loss.
+
+o Steps to reproduce the bug
+To reproduce the bug send a PUT /todos/:id request to an id associated to an already existing todo with at least one field not specified in the body. It will be observed that the field(s) which was not specified will now have reverted to its' default value in the project instead of remaining unchanged.
+
