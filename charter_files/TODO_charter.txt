@@ -38,7 +38,13 @@ JSON API Calls
 TESTER
 —————————————————————————————
 Mihir Binay Kumar
+mihir.kumar@mail.mcgill.ca
+260794992
+
+
 Billy Exarhakos
+vassilios.exarhakos@mail.mcgill.ca
+261051989
 
 
 TASK BREAKDOWN
@@ -133,6 +139,35 @@ We now move on to the PUT HTTP call where we maintain the same format of the API
 
 To further test this PUT HTTP call, we changed the ID 5 data point back to its original data using the POST HTTP call and the same link as before (“http://localhost:4567/todos/5”) and then tried sending a JSON body with just a description. In return, we got an error message saying “title: field is mandatory” and a 400 HTTP status code (Bad Request). This further proves our previous BUG to be existent with this PUT API call. With these tests on the PUT HTTP call for the link format http://localhost:4567/todos/:id, we can say that the BUG deletes all the previous data of the ID we had asked for and completely takes in the JSON body we sent in as the new data point for all the attributes (doneStatus, description, and title) even if they are not provided in the input JSON body, ##BUG 
 
+Summary of Session Findings
+—————————————————————————————
+• POST http://localhost:4567/todos correctly handled valid input in the form of either all fields being specified or each field being specified on its own. It correctly handled invalid input in the form of incorrectly typed "active" and "completed" fields, as well as the body specifying an id, by raising an error and sending a 400 status.
 
+• GET http://localhost:4567/todos correctly returned all existing todo lists in the database.
+
+• POST /todos/:id correctly handled valid input in the form of either all fields being specified or each field being specified on its own. It also handled invalid input correctly whether it was the "completed" and "active" fields having type String instead of boolean or specifying an id in the body of the call. The API also correctly raised an error and sent a 404 status when given an id with no associated todos.
+
+• GET /todos/:id, when given an id with a todos associated to it, correctly returned the todos. It also correctly raised an error and sent a 404 status when given an id with no associated todos or a negative id.
+
+• PUT /todos/:id, when given an id with a todos associated to it, correctly amended the fields of that todos when all fields were specified in the body of the call. However, there is a bug which makes it so that if there is a field which is not specified in the body, the PUT call will return that field to its default value instead of keeping it as it was previously. The API did still correctly handle invalid input in the form of the fields "completed" and "active" being Strings instead of booleans by raising an error and sending a 400 status. It also correctly handled the specified id either not having a todos associated to it or being a text by raising an error and sending a 404 status.
+
+• DELETE /todos/:id correctly deletes the todos at the specified id when it exists. This was checked by trying a GET call on the deleted id and making sure that it sends a 404 status. It also correctly handled being given an id with no todos associated to it, a negative id and the id being text by raising an error and sending a 404 status.
+
+
+Concerns
+—————————————————————————————
+The major concern which was raised during this testing session is the bug identified in the PUT request. This bug, which erroneously deletes the values of fields, could lead to data loss and a loss of data integrity.
+
+
+Future Testing Ideas
+—————————————————————————————
+Future tests could include:
+
+• Testing the API's ability to handle extremely long input Strings and special characters
+• Testing the API's ability to handle many concurrent requests
+
+Areas of Potential Risk
+—————————————————————————————
+For any user trying to use the PUT API request for the todo functionality and only wanting to make individual attribute changes would be risking alot with this current version of the API.
 
 
