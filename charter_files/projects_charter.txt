@@ -190,7 +190,7 @@ Summary of Session Findings
 
 Concerns
 —————————————————————————————
-The major concern which was raised during this testing session is the bug identified in the PUT request. This bug, which erroneously deletes the values of fields, could lead to data loss and a loss of data integrity.
+The major concern which was raised during this testing session is the bug identified in the PUT request. This bug, which erroneously deletes the values of fields, poses a potential risk, as it could lead to data loss and a loss of data integrity.
 
 
 Future Testing Ideas
@@ -199,3 +199,4 @@ Future tests could include:
 
 • Testing the API's ability to handle extremely long input Strings and special characters
 • Testing the API's ability to handle many concurrent requests
+
