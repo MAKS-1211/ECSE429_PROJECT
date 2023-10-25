@@ -10,7 +10,7 @@ def randomize_test(suite):
 
 def testing():
     loader = unittest.TestLoader()
-    suite = loader.discover(start_dir='.', pattern='test_*.py')
+    suite = loader.discover(start_dir='', pattern='test_*.py')
 
     random_suite = randomize_test(suite)
 
