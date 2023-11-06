@@ -1,0 +1,1 @@
+Feature: As a user I want to create a new todo item with a specific done status in mind
