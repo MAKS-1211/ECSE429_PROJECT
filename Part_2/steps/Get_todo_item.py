@@ -158,7 +158,6 @@ def step_impl(context):
         if data_points['id'] == context.response2.json()['id']:
             assert str(data_points['doneStatus']).upper() == "True".upper()
 
-
 @then(u'I shutdown the rest API todo list manager')
 def step_impl(context):
     context.jar_process.terminate()
