@@ -33,8 +33,13 @@
 
 
     # Error Flow
-    Scenario: The user wants to mark a project that has already been deleted as done
+    Scenario Outline: The user wants to mark a project that has already been deleted as done
       Given An already existing project with a title <tit>, a description <desc>, an active status <act> and a completed status <comp>
       When The user marks the project as done by deleting it from the database
       And The user marks the project as done by updating the active and completed status using a POST call
       Then The user will get a Not Found HTTP status code (404)
+      
+      Examples:
+        | tit       | desc            | act   | comp  |
+        | Project 1 | Python testing  | True  | False |
+        | Project 2 | Gherkin testing | True  | False |
