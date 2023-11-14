@@ -15,7 +15,7 @@ Feature: As a user I want to update one of my todo list with a new done Status
       | ECSE 429| Project Part B |
       | ECSE 427|  Assignment 2  |
 
-  Scenario Outline: As a user I want to update a todo item with a new done status False and description Final Exam (Alternate Flow)
+  Scenario Outline: As a user I want to update a todo item with a new done status False and description (Alternate Flow)
     When I send a POST request "/todo/id" with the ID of the todo item, the new done status- False and the new description- <description>
     Then I get the todo item title <title> as it was for that todo item initially
     And I get the todo item descriptions as <description> for that todo item.
