@@ -4,6 +4,9 @@ import sys
 from behave.__main__ import Configuration, run_behave, Runner
 
 
+"""
+Shuffle class that has function used to find all the feature files and randomize these files
+"""
 class Shuffle_Features(Runner):
 
     def feature_locations(self):
