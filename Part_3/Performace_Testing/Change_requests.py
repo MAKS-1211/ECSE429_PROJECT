@@ -4,6 +4,7 @@ import subprocess
 import time
 
 
+
 def setUpClass():
     current_directory = os.getcwd()
     api_path = current_directory + "/runTodoManagerRestAPI-1.5.22.jar"
@@ -71,52 +72,9 @@ def one_change_object(responses):
     print("The available free memory is:", str(psutil.virtual_memory().available))
 
 
-def ten_change_objects(responses):
-    for a in range(0, 10):
-        random_datapoint = random.choice(responses)
-        random_id = random_datapoint.json()['id']
-    
-        random_boolean = random.choice([True, False])
-
-        possible_characters = string.ascii_letters
-
-        random_description = ''.join(random.choice(possible_characters) for _ in range(a+1))
-        random_title = ''.join(random.choice(possible_characters) for _ in range(a+1))
-
-        new_todo = {
-            "doneStatus": random_boolean,
-            "description": random_description,
-            "title": random_title
-        }
-
-        response = requests.post("http://localhost:4567/todos/"+random_id, data=json.dumps(new_todo))
-    print("The CPU usage rate is:", str(psutil.cpu_percent()))
-    print("The available free memory is:", str(psutil.virtual_memory().available))
-
-def twenty_five_change_objects(responses):
-    for a in range(0, 25):
-        random_datapoint = random.choice(responses)
-        random_id = random_datapoint.json()['id']
-    
-        random_boolean = random.choice([True, False])
-
-        possible_characters = string.ascii_letters
-
-        random_description = ''.join(random.choice(possible_characters) for _ in range(a+1))
-        random_title = ''.join(random.choice(possible_characters) for _ in range(a+1))
-
-        new_todo = {
-            "doneStatus": random_boolean,
-            "description": random_description,
-            "title": random_title
-        }
-
-        response = requests.post("http://localhost:4567/todos/"+random_id, data=json.dumps(new_todo))
-    print("The CPU usage rate is:", str(psutil.cpu_percent()))
-    print("The available free memory is:", str(psutil.virtual_memory().available))
-
-
 def fifty_change_objects(responses):
+    usage_rate = 0
+    available_memory = 0
     for a in range(0, 50):
         random_datapoint = random.choice(responses)
         random_id = random_datapoint.json()['id']
@@ -135,11 +93,17 @@ def fifty_change_objects(responses):
         }
 
         response = requests.post("http://localhost:4567/todos/"+random_id, data=json.dumps(new_todo))
-    print("The CPU usage rate is:", str(psutil.cpu_percent()))
-    print("The available free memory is:", str(psutil.virtual_memory().available))
-
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
+        
+    average_usage_rate = usage_rate / 50
+    average_memory =  available_memory / 50
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate)) 
 
 def hundred_change_objects(responses):
+    usage_rate = 0
+    available_memory = 0
     for a in range(0, 100):
         random_datapoint = random.choice(responses)
         random_id = random_datapoint.json()['id']
@@ -158,18 +122,112 @@ def hundred_change_objects(responses):
         }
 
         response = requests.post("http://localhost:4567/todos/"+random_id, data=json.dumps(new_todo))
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
         
-    print("The CPU usage rate is:", str(psutil.cpu_percent()))
-    print("The available free memory is:", str(psutil.virtual_memory().available))
+    average_usage_rate = usage_rate / 100
+    average_memory =  available_memory / 100
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate)) 
+
+
+def two_hundred_change_objects(responses):
+    usage_rate = 0
+    available_memory = 0
+    for a in range(0, 200):
+        random_datapoint = random.choice(responses)
+        random_id = random_datapoint.json()['id']
+    
+        random_boolean = random.choice([True, False])
+
+        possible_characters = string.ascii_letters
+
+        random_description = ''.join(random.choice(possible_characters) for _ in range(a+1))
+        random_title = ''.join(random.choice(possible_characters) for _ in range(a+1))
+
+        new_todo = {
+            "doneStatus": random_boolean,
+            "description": random_description,
+            "title": random_title
+        }
+
+        response = requests.post("http://localhost:4567/todos/"+random_id, data=json.dumps(new_todo))
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
+    
+    average_usage_rate = usage_rate / 200
+    average_memory =  available_memory / 200
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate)) 
+
+
+def five_hundred_change_objects(responses):
+    usage_rate = 0
+    available_memory = 0
+    for a in range(0, 500):
+        random_datapoint = random.choice(responses)
+        random_id = random_datapoint.json()['id']
+    
+        random_boolean = random.choice([True, False])
+
+        possible_characters = string.ascii_letters
+
+        random_description = ''.join(random.choice(possible_characters) for _ in range(a+1))
+        random_title = ''.join(random.choice(possible_characters) for _ in range(a+1))
+
+        new_todo = {
+            "doneStatus": random_boolean,
+            "description": random_description,
+            "title": random_title
+        }
+
+        response = requests.post("http://localhost:4567/todos/"+random_id, data=json.dumps(new_todo))
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
+        
+    average_usage_rate = usage_rate / 500
+    average_memory =  available_memory / 500
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate))    
+    
+def thousand_change_objects(responses):
+    usage_rate = 0
+    available_memory = 0
+    for a in range(0, 1000):
+        random_datapoint = random.choice(responses)
+        random_id = random_datapoint.json()['id']
+    
+        random_boolean = random.choice([True, False])
+
+        possible_characters = string.ascii_letters
+
+        random_description = ''.join(random.choice(possible_characters) for _ in range(a+1))
+        random_title = ''.join(random.choice(possible_characters) for _ in range(a+1))
+
+        new_todo = {
+            "doneStatus": random_boolean,
+            "description": random_description,
+            "title": random_title
+        }
+
+        response = requests.post("http://localhost:4567/todos/"+random_id, data=json.dumps(new_todo))
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
+        
+    average_usage_rate = usage_rate / 1000
+    average_memory =  available_memory / 1000
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate))    
 
 
 class main:
     responses = setUp()
-    one_change_object(responses)
-    #ten_change_objects(responses)
-    # twenty_five_change_objects(responses)
-    # fifty_change_objects(responses)
+    #one_change_object(responses)
+    #fifty_change_objects(responses)
     #hundred_change_objects(responses)
+    #two_hundred_change_objects(responses)
+    #five_hundred_change_objects(responses)
+    thousand_change_objects(responses)
 
 
 

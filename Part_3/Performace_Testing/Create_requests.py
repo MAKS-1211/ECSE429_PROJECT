@@ -60,6 +60,8 @@ def one_post_objects():
 
 
 def fifty_post_objects():
+    usage_rate = 0
+    available_memory = 0
     for a in range(0, 50):
         random_boolean = random.choice([True, False])
 
@@ -75,12 +77,19 @@ def fifty_post_objects():
         }
 
         requests.post("http://localhost:4567/todos", data=json.dumps(new_todo))
-        
-    print("The available free memory is:", str(psutil.virtual_memory().available))
-    print("The CPU usage rate is:", str(psutil.cpu_percent()))    
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
+    
+    average_usage_rate = usage_rate / 50
+    #average_usage_rate = (psutil.cpu_percent())
+    average_memory =  available_memory / 50 
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate))    
 
 
 def hundred_post_objects():
+    usage_rate = 0
+    available_memory = 0
     for a in range(0, 100):
         random_boolean = random.choice([True, False])
 
@@ -96,11 +105,19 @@ def hundred_post_objects():
         }
 
         requests.post("http://localhost:4567/todos", data=json.dumps(new_todo))
-        if a == 98:
-            print("The available free memory is:", str(psutil.virtual_memory().available))
-            print("The CPU usage rate is:", str(psutil.cpu_percent()))    
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
+        
+    average_usage_rate = usage_rate / 100
+    #average_usage_rate = int(psutil.cpu_percent())
+    average_memory =  available_memory / 100
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate))     
+        
 
 def two_hundred_post_objects():
+    usage_rate = 0
+    available_memory = 0
     for a in range(0, 200):
         random_boolean = random.choice([True, False])
 
@@ -116,11 +133,19 @@ def two_hundred_post_objects():
         }
 
         requests.post("http://localhost:4567/todos", data=json.dumps(new_todo))
-        if a == 198:
-            print("The available free memory is:", str(psutil.virtual_memory().available))
-            print("The CPU usage rate is:", str(psutil.cpu_percent()))      
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
+        
+    average_usage_rate = usage_rate / 200
+    #average_usage_rate = int(psutil.cpu_percent())
+    average_memory =  available_memory / 200
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate))         
+      
 
 def five_hundred_post_objects():
+    usage_rate = 0
+    available_memory = 0
     for a in range(0, 500):
         random_boolean = random.choice([True, False])
 
@@ -136,11 +161,18 @@ def five_hundred_post_objects():
         }
 
         requests.post("http://localhost:4567/todos", data=json.dumps(new_todo))
-        if a == 498:
-            print("The available free memory is:", str(psutil.virtual_memory().available))
-            print("The CPU usage rate is:", str(psutil.cpu_percent()))    
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
+        
+    average_usage_rate = usage_rate / 500
+    #average_usage_rate = int(psutil.cpu_percent())
+    average_memory =  available_memory / 500
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate))       
 
 def one_thousand_post_objects():
+    usage_rate = 0
+    available_memory = 0
     for a in range(0, 1000):
         random_boolean = random.choice([True, False])
 
@@ -156,17 +188,23 @@ def one_thousand_post_objects():
         }
 
         requests.post("http://localhost:4567/todos", data=json.dumps(new_todo))
-        if a == 998:
-            print("The available free memory is:", str(psutil.virtual_memory().available))
-            print("The CPU usage rate is:", str(psutil.cpu_percent()))    
+        usage_rate = usage_rate + int(psutil.cpu_percent())
+        available_memory = available_memory + (psutil.virtual_memory().available)
+          
+    
+    average_usage_rate = usage_rate / 1000
+    #average_usage_rate = int(psutil.cpu_percent())
+    average_memory =  available_memory / 1000
+    print("The average available free memory is:", str(average_memory))
+    print("The average CPU usage rate is:", str(average_usage_rate)) 
     
 class main:
     #one_post_objects()
     #fifty_post_objects()
-    hundred_post_objects()
+    #hundred_post_objects()
     #two_hundred_post_objects()
     #five_hundred_post_objects()
-    #one_thousand_post_objects()
+    one_thousand_post_objects()
     
     
 '''
